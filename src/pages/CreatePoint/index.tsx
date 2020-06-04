@@ -5,6 +5,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
 import { Map, TileLayer, Marker } from 'react-leaflet';
 import { LeafletMouseEvent } from 'leaflet';
+import InputMask from 'react-input-mask';
 import axios from 'axios';
 import api from '../../services/api';
 
@@ -119,7 +120,7 @@ const CreatePoint = () => {
     };
     try {
       await api.post('points', data);
-      alert('Ponto de alerta criado!');
+      alert('Ponto de coleta criado!');
       history.push('/');
     } catch (err) {
       if (err.response.status === 400) {
@@ -154,6 +155,8 @@ const CreatePoint = () => {
               type="text"
               name="name"
               id="name"
+              minLength={3}
+              maxLength={35}
               onChange={handleInputChange}
             />
           </div>
@@ -171,7 +174,8 @@ const CreatePoint = () => {
 
             <div className="field">
               <label htmlFor="whatsapp">WhatsApp <span className="mandatory-tick">*</span></label>
-              <input
+              <InputMask
+                mask="(99) 99999-9999"
                 type="text"
                 name="whatsapp"
                 id="whatsapp"
