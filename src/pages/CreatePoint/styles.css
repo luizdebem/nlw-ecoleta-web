@@ -201,3 +201,7 @@
   background: #E1FAEC;
   border: 2px solid #34CB79;
 }
+
+.mandatory-tick {
+  color: #ff3337 !important;
+}

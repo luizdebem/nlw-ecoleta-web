@@ -117,9 +117,16 @@ const CreatePoint = () => {
     const data = {
       name, email, whatsapp, uf, city, lat, lon, items 
     };
-    await api.post('points', data);
-    alert('Ponto de alerta criado!');
-    history.push('/');
+    try {
+      await api.post('points', data);
+      alert('Ponto de alerta criado!');
+      history.push('/');
+    } catch (err) {
+      if (err.response.status === 400) {
+        return alert('O formulário contém erros, verifique os dados.')
+      }
+      return alert('Erro no servidor.');
+    }
   }
 
   return (
@@ -133,7 +140,8 @@ const CreatePoint = () => {
       </header>
 
       <form onSubmit={handleSubmit}>
-        <h1>Cadastro do <br />ponto de coleta</h1>
+        <h1>Cadastro do <br />ponto de coleta</h1> <br/>
+        <p>Os campos marcados com <span className="mandatory-tick">*</span> são obrigatórios.</p>
 
         <fieldset>
           <legend>
@@ -141,7 +149,7 @@ const CreatePoint = () => {
           </legend>
 
           <div className="field">
-            <label htmlFor="name">Nome da entidade</label>
+            <label htmlFor="name">Nome da entidade <span className="mandatory-tick">*</span></label>
             <input
               type="text"
               name="name"
@@ -152,7 +160,7 @@ const CreatePoint = () => {
 
           <div className="field-group">
             <div className="field">
-              <label htmlFor="email">Email</label>
+              <label htmlFor="email">Email <span className="mandatory-tick">*</span></label>
               <input
                 type="email"
                 name="email"
@@ -162,7 +170,7 @@ const CreatePoint = () => {
             </div>
 
             <div className="field">
-              <label htmlFor="whatsapp">WhatsApp</label>
+              <label htmlFor="whatsapp">WhatsApp <span className="mandatory-tick">*</span></label>
               <input
                 type="text"
                 name="whatsapp"
@@ -175,7 +183,7 @@ const CreatePoint = () => {
 
         <fieldset>
           <legend>
-            <h2>Endereço</h2>
+            <h2>Endereço <span className="mandatory-tick">*</span></h2>
             <span>Selecione o endereço no mapa</span>
           </legend>
 
@@ -189,7 +197,7 @@ const CreatePoint = () => {
 
           <div className="field-group">
             <div className="field">
-              <label htmlFor="uf">Estado (UF)</label>
+              <label htmlFor="uf">Estado (UF) <span className="mandatory-tick">*</span></label>
               <select name="uf" id="uf" value={selectedUf} onChange={handleSelectUf}>
                 <option value="0">Selecione uma UF</option>
                 {ufs.map(uf => (
@@ -199,7 +207,7 @@ const CreatePoint = () => {
             </div>
 
             <div className="field">
-              <label htmlFor="city">Cidade</label>
+              <label htmlFor="city">Cidade <span className="mandatory-tick">*</span></label>
               <select name="city" id="city" value={selectedCity} onChange={handleSelectCity}>
                 <option value="0">Selecione uma cidade</option>
                 {cities.map(city => (
@@ -212,7 +220,7 @@ const CreatePoint = () => {
 
         <fieldset>
           <legend>
-            <h2>Ítens de coleta</h2>
+            <h2>Ítens de coleta <span className="mandatory-tick">*</span></h2>
             <span>Selecione um ou mais itens abaixo</span>
           </legend>
 
