@@ -8,6 +8,7 @@ import { LeafletMouseEvent } from 'leaflet';
 import InputMask from 'react-input-mask';
 import axios from 'axios';
 import api from '../../services/api';
+import DropzoneComponent from '../../components/Dropzone';
 
 interface Item {
   id: number;
@@ -40,6 +41,7 @@ const CreatePoint = () => {
   const [selectedCity, setSelectedCity] = useState('0');
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [selectedPosition, setSelectedPosition] = useState<[number, number]>([0, 0]);
+  const [selectedFile, setSelectedFile] = useState<File>();
 
   const history = useHistory();
 
@@ -108,16 +110,27 @@ const CreatePoint = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    
+
     const { name, email, whatsapp } = formData;
     const uf = selectedUf;
     const city = selectedCity;
     const [lat, lon] = selectedPosition;
     const items = selectedItems;
 
-    const data = {
-      name, email, whatsapp, uf, city, lat, lon, items 
-    };
+    const data = new FormData();
+
+    data.append('name', name);
+    data.append('email', email);
+    data.append('whatsapp', whatsapp);
+    data.append('uf', uf);
+    data.append('city', city);
+    data.append('lat', String(lat));
+    data.append('lon', String(lon));
+    data.append('items', items.join(','));
+    if (selectedFile) {
+      data.append('image', selectedFile);
+    }
+
     try {
       await api.post('points', data);
       alert('Ponto de coleta criado!');
@@ -141,8 +154,10 @@ const CreatePoint = () => {
       </header>
 
       <form onSubmit={handleSubmit}>
-        <h1>Cadastro do <br />ponto de coleta</h1> <br/>
+        <h1>Cadastro do <br />ponto de coleta</h1> <br />
         <p>Os campos marcados com <span className="mandatory-tick">*</span> são obrigatórios.</p>
+
+        <DropzoneComponent onFileUploaded={setSelectedFile} />
 
         <fieldset>
           <legend>
